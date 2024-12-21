@@ -82,7 +82,6 @@ class AVLTree:
 
 
 
-
     def in_order(self, root):
         if root:
             self.in_order(root.left)
