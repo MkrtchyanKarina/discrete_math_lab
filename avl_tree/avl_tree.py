@@ -42,11 +42,11 @@ class AVLTree:
 
     def right_rotate(self, root):
         new_root = root.left
-        root.left = new_root.right
+        root.left = None
         new_root.right = root
 
         # Обновление высот
-        root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
+        root.height = 1 + self.get_height(root.right)
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
 
         # Обновление баланса
@@ -57,16 +57,18 @@ class AVLTree:
 
     def left_rotate(self, root):
         new_root = root.right
-        root.right = new_root.left
         new_root.left = root
+        root.right = None
+
 
         # Обновление высот
-        root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
+        root.height = 1 + self.get_height(root.left)
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
 
         # Обновление баланса
         root.balance_factor = self.get_balance(root)
         new_root.balance_factor = self.get_balance(new_root)
+        print(root.balance_factor, new_root.balance_factor, new_root.value)
 
         return new_root
 
@@ -98,7 +100,7 @@ if __name__ == "__main__":
     tree = AVLTree()
     root = None
 
-    keys = [10, 20, 30, 40, 50, 25]
+    keys = [10, 20, 30, 40, 50, 25, 394, 24, 2, 5, 3647]
     for key in keys:
         root = tree.push(root, key)
 
