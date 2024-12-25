@@ -1,17 +1,9 @@
 from prettytable import PrettyTable
-
+import pathlib
 
 class PostClasses:
-    def __init__(self) -> None:
-        truth_table = sorted(
-            ([0, 0, 0, 0],
-             [0, 0, 1, 0],
-             [0, 1, 0, 0],
-             [0, 1, 1, 1],
-             [1, 0, 0, 0],
-             [1, 0, 1, 1],
-             [1, 1, 0, 1],
-             [1, 1, 1, 1]))
+    def __init__(self, truth_table: list[list[int]]) -> None:
+        truth_table.sort()
 
         self.values_count = len(truth_table[0]) - 1
         self.lines_count = len(truth_table)
@@ -89,6 +81,53 @@ class PostClasses:
         classes = ["+" if i else "-" for i in classes]
         table.add_row(classes)
         print(table)
+"""      
+0 0 0 0
+0 0 1 0
+0 1 0 0
+0 1 1 1
+1 0 0 0
+1 0 1 1
+1 1 0 1
+1 1 1 1
+"""
+
+
+def solve():
+    answer = input("Ввод/вывод через файл/терминал: ").lower()
+    if answer == "файл":
+        pass
+        file = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
+        data = file.read().split("\n")
+        array = [list(map(int, d.split(" "))) for d in data]
+        PostClasses(array).post_classes()
+    elif answer == "терминал":
+        print("Введите таблицу через enter: ")
+        line = input()
+
+
+        try:
+            array = []
+            while line != "" and all(el in "01 " for el in line):
+                new_line = list(map(int, line.split(" ")))
+                array += [new_line]
+                line = input()
+            PostClasses(array).post_classes()
+
+
+        except:
+            answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
+            if answer == "д":
+                return solve()
+            else:
+                pass
+    else:
+        answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
+        if answer == "д":
+            return solve()
+        else:
+            pass
+
 
 if __name__ == "__main__":
-    PostClasses().post_classes()
+    solve()

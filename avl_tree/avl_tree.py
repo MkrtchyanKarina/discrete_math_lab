@@ -1,10 +1,13 @@
+
+import pathlib
 class Node:
     def __init__(self, value):
         self.left = None
         self.right = None
         self.balance_factor = 0
-        self.height = 1  # Добавляем высоту узла
+        self.height = 1
         self.value = value
+
 
 
 class AVLTree:
@@ -17,24 +20,24 @@ class AVLTree:
         else:
             root.right = self.push(root.right, value)
 
-        # Обновление высоты узла
+
         root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
 
-        # Обновляем баланс
+
         root.balance_factor = self.get_balance(root)
 
-        # Проверка на дисбаланс и выполнение поворотов, если необходимо
-        if root.balance_factor > 1:  # Левый поддерево превышает
-            if value < root.left.value:  # Левый левый случай
+
+        if root.balance_factor > 1:
+            if value < root.left.value:
                 return self.right_rotate(root)
-            else:  # Левый правый случай
+            else:
                 root.left = self.left_rotate(root.left)
                 return self.right_rotate(root)
 
-        if root.balance_factor < -1:  # Правый поддерево превышает
-            if value > root.right.value:  # Правый правый случай
+        if root.balance_factor < -1:
+            if value > root.right.value:
                 return self.left_rotate(root)
-            else:  # Правый левый случай
+            else:
                 root.right = self.right_rotate(root.right)
                 return self.left_rotate(root)
 
@@ -45,11 +48,9 @@ class AVLTree:
         root.left = None
         new_root.right = root
 
-        # Обновление высот
         root.height = 1 + self.get_height(root.right)
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
 
-        # Обновление баланса
         root.balance_factor = self.get_balance(root)
         new_root.balance_factor = self.get_balance(new_root)
 
@@ -61,16 +62,14 @@ class AVLTree:
         root.right = None
 
 
-        # Обновление высот
         root.height = 1 + self.get_height(root.left)
         new_root.height = 1 + max(self.get_height(new_root.left), self.get_height(new_root.right))
 
-        # Обновление баланса
         root.balance_factor = self.get_balance(root)
         new_root.balance_factor = self.get_balance(new_root)
-        print(root.balance_factor, new_root.balance_factor, new_root.value)
 
         return new_root
+
 
     def get_height(self, root):
         if not root:
@@ -81,8 +80,6 @@ class AVLTree:
         if not root:
             return 0
         return self.get_height(root.left) - self.get_height(root.right)
-
-
 
     def in_order(self, root):
         if root:
@@ -96,17 +93,45 @@ class AVLTree:
             print(' ' * 4 * level + '->', node.value)
             self.print_tree(node.left, level + 1)
 
-if __name__ == "__main__":
+
+def return_tree(array):
     tree = AVLTree()
     root = None
 
-    keys = [10, 20, 30, 40, 50, 25, 394, 24, 2, 5, 3647]
-    for key in keys:
-        root = tree.push(root, key)
+    for elem in array:
+        root = tree.push(root, elem)
 
-    print("In-order Traversal:")
+    print("В виде списка:")
     tree.in_order(root)
-    print("\nTree Structure:")
+    print("\nВ виде дерева:")
     tree.print_tree(root)
 
 
+def solve():
+    answer = input("Ввод/вывод через файл/терминал: ").lower()
+    if answer == "файл":
+        file = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
+        array = list(map(int, file.readline().split(" ")))
+        return_tree(array)
+    elif answer == "терминал":
+        answer = input("Введите элементы массива через пробел: ")
+        try:
+            array = list(map(int, answer.split(" ")))
+            return_tree(array)
+
+        except:
+            answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
+            if answer == "д":
+                return solve()
+            else:
+                pass
+    else:
+        answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
+        if answer == "д":
+            return solve()
+        else:
+            pass
+
+
+if __name__ == "__main__":
+    solve()
