@@ -1,5 +1,6 @@
-
 import pathlib
+
+
 class Node:
     def __init__(self, value):
         self.left = None
@@ -9,8 +10,11 @@ class Node:
         self.value = value
 
 
-
 class AVLTree:
+    def __init__(self):
+        self.result_in_order = ''
+        self.result_in_tree = ''
+
     def push(self, root, value: int):
         if root is None:
             return Node(value)
@@ -20,12 +24,8 @@ class AVLTree:
         else:
             root.right = self.push(root.right, value)
 
-
         root.height = 1 + max(self.get_height(root.left), self.get_height(root.right))
-
-
         root.balance_factor = self.get_balance(root)
-
 
         if root.balance_factor > 1:
             if value < root.left.value:
@@ -70,7 +70,6 @@ class AVLTree:
 
         return new_root
 
-
     def get_height(self, root):
         if not root:
             return 0
@@ -84,53 +83,64 @@ class AVLTree:
     def in_order(self, root):
         if root:
             self.in_order(root.left)
-            print(root.value, end=' ')
+            self.result_in_order += f'{root.value} '
             self.in_order(root.right)
-
-    def print_tree(self, node, level=0):
-        if node is not None:
-            self.print_tree(node.right, level + 1)
-            print(' ' * 4 * level + '->', node.value)
-            self.print_tree(node.left, level + 1)
+        return self.result_in_order.strip()
 
 
-def return_tree(array):
-    tree = AVLTree()
-    root = None
+class CreateAVLTree:
+    def __init__(self, array):
+        self.array = array
+        self.tree = AVLTree()
+        self.root = None
+        self.push()
 
-    for elem in array:
-        root = tree.push(root, elem)
+    def push(self):
+        for elem in self.array:
+            self.root = self.tree.push(self.root, elem)
 
-    print("В виде списка:")
-    tree.in_order(root)
-    print("\nВ виде дерева:")
-    tree.print_tree(root)
+    def return_res(self):
+        return self.tree.in_order(self.root)
+
+
+class File:
+    def __init__(self):
+        self.tree = None
+        self.read()
+
+    def read(self):
+        file_input = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
+        array = list(map(int, file_input.readline().split(" ")))
+        file_input.close()
+        self.tree = CreateAVLTree(array)
+        self.write()
+
+    def write(self):
+        file_output = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'output.txt'), 'w')
+        file_output.write(self.tree.return_res())
+        file_output.close()
+
 
 
 def solve():
-    answer = input("Ввод/вывод через файл/терминал: ").lower()
-    if answer == "файл":
-        file = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
-        array = list(map(int, file.readline().split(" ")))
-        return_tree(array)
-    elif answer == "терминал":
+    answer = input("Ввод/вывод через файл/терминал [Ф/т]: ").lower()
+
+    if answer == "ф":
+        File()
+    elif answer == "т":
         answer = input("Введите элементы массива через пробел: ")
         try:
             array = list(map(int, answer.split(" ")))
-            return_tree(array)
-
+            tree = CreateAVLTree(array)
+            print(tree.return_res())
         except:
             answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
             if answer == "д":
                 return solve()
-            else:
-                pass
     else:
         answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
         if answer == "д":
             return solve()
-        else:
-            pass
 
 
 if __name__ == "__main__":
