@@ -113,7 +113,6 @@ class File:
         array = list(map(int, file_input.readline().split(" ")))
         file_input.close()
         self.tree = CreateAVLTree(array)
-        self.write()
 
     def write(self):
         file_output = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'output.txt'), 'w')
@@ -126,7 +125,7 @@ def solve():
     answer = input("Ввод/вывод через файл/терминал [Ф/т]: ").lower()
 
     if answer == "ф":
-        File()
+        File().write()
     elif answer == "т":
         answer = input("Введите элементы массива через пробел: ")
         try:

@@ -1,5 +1,5 @@
-from prettytable import PrettyTable
 import pathlib
+
 
 class PostClasses:
     def __init__(self, truth_table: list[list[int]]) -> None:
@@ -78,32 +78,33 @@ class PostClasses:
 
     def get_table(self):
         self.result = [self.zero_class(), self.unit_class(), self.lineal_class(), self.monotone_class(), self.self_dual_class()]
-        self.result = ["+" if i else "-" for i in self.result]
+        self.result = ' '.join(self.classes) + '\n' + ' '.join(["+" if i else "-" for i in self.result])
+        return self.result
 
 
-    def print_table(self):
-        self.get_table()
-        table = PrettyTable()
-        table.field_names = self.classes
-        table.hrules = 1
-        table.add_row(self.result)
-        print(table)
 
+class File:
+    def __init__(self):
+        self.classes = None
+        self.read()
 
-    def write_table_to_file(self):
-        self.get_table()
-        file = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'output.txt'), 'w')
-        file.write(" ".join(self.classes) + "\n" + " ".join(self.result))
+    def read(self):
+        file_input = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
+        data = file_input.read().split("\n")
+        array = [list(map(int, d.split(" "))) for d in data]
+        file_input.close()
+        self.classes = PostClasses(array)
+
+    def write(self):
+        file_output = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'output.txt'), 'w')
+        file_output.write(self.classes.get_table())
+        file_output.close()
 
 
 def solve():
     answer = input("Ввод/вывод через файл/терминал [Ф/т]: ").lower()
     if answer == "ф":
-        file = open(pathlib.Path(pathlib.Path(__file__).parent, 'txtf', 'input.txt'))
-        data = file.read().split("\n")
-        array = [list(map(int, d.split(" "))) for d in data]
-        PostClasses(array).write_table_to_file()
-
+        File().write()
     elif answer == "т":
         print("Введите таблицу. В конце нажмите enter: ")
         line = input()
@@ -113,20 +114,15 @@ def solve():
                 new_line = list(map(int, line.split(" ")))
                 array += [new_line]
                 line = input()
-            PostClasses(array).print_table()
+            print(PostClasses(array).get_table())
         except:
             answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
             if answer == "д":
                 return solve()
-            else:
-                pass
-
     else:
         answer = input("Неправильно введены данные. Хотите продолжить? (Д/н): ").lower()
         if answer == "д":
             return solve()
-        else:
-            pass
 
 
 if __name__ == "__main__":
